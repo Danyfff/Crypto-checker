@@ -85,5 +85,3 @@ class Web3Manager():
         print("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")
 
 w3manager = Web3Manager()
-
-w3manager.get_balance_wallet('0x2a647559a6c5dcb76ce1751101449ebbc039b157')
