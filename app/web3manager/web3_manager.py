@@ -1,4 +1,5 @@
 from web3 import Web3, HTTPProvider
+from eth_account import Account
 
 
 class Web3Manager():
@@ -35,18 +36,19 @@ class Web3Manager():
             'currency': 'eth'
             },
         'linea':{
-            'rpc': 'https://1rpc.io/linea',
+            'rpc': 'https://linea.decubate.com',
             'name': 'Linea',
             'currency': 'eth'
             }
         }
     
-    def __connect_node(self, rpc_chein):
-        return Web3(HTTPProvider(rpc_chein))
+    def connect_node(self, rpc_chein):
+        rpc = self.rpc[rpc_chein]['rpc']
+        return Web3(HTTPProvider(rpc))
     
     def get_chein_info(self, chein):
         '''Вывод данных о сети'''
-        web3 = self.__connect_node(self.rpc[chein]['rpc'])
+        web3 = self.connect_node(chein)
         if web3:
             print(
                 "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
@@ -65,23 +67,11 @@ class Web3Manager():
         except:
             return 
 
-    def get_balance_wallet_by_chein(self, checksum_address, chein):
-        web3 = self.__connect_node(self.rpc[chein]['rpc'])
-        return web3.eth.get_balance(checksum_address)
-
-    def get_balance_wallet(self, wallet_address):
+    def get_balance_wallet_by_chein(self, wallet_address, chein):
         checksum_address = self.get_checksum_address(wallet_address)
-        if checksum_address:
-            print("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
-                  f"Address: {wallet_address}")
-        else:
-            print('EROR: There is no such address')
-            return
-        
-        for chein in self.rpc:
-            name_chein = self.rpc[chein]['name']
-            print(f'{name_chein}: {self.get_balance_wallet_by_chein(checksum_address, chein)}')
-            
-        print("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")
+        web3 = self.connect_node(chein)
+        balance_in_wei = web3.eth.get_balance(checksum_address)
+        balance_in_eth = web3.from_wei(balance_in_wei, 'ether')
+        return balance_in_eth
 
 w3manager = Web3Manager()
